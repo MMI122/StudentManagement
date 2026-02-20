@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .nav-tab {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .nav-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .nav-tab.active {
+            background: #4CAF50;
+            color: white;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-teacher {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .badge-student {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        .login-info {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ffc107;
+        }
+        .login-info strong {
+            color: #856404;
+        }
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+        .action-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Student Management System</h1>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('login')">🔐 Login</button>
+            <button class="nav-tab" onclick="showSection('register')">📝 Register</button>
+            <button class="nav-tab" onclick="showSection('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="showSection('courses')">📚 Courses</button>
+            <button class="nav-tab" onclick="showSection('departments')">🏛️ Departments</button>
+            <button class="nav-tab" onclick="showSection('students')">👨‍🎓 Students</button>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <!-- Login Section -->
+        <div id="login" class="section active">
+            <div class="card">
+                <h2>🔐 Login</h2>
+                <div class="login-info">
+                    <strong>Note:</strong> This system uses HTTP Basic Authentication. Enter your credentials below to authenticate.
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password">
+                </div>
+                <button class="btn btn-primary" onclick="login()">Login</button>
+                <p style="margin-top: 15px; color: #666;">Don't have an account? Go to <strong>Register</strong> tab.</p>
+            </div>
+        </div>
+
+        <!-- Register Section -->
+        <div id="register" class="section">
+            <div class="two-col">
+                <div class="card">
+                    <h2>👨‍🏫 Register as Teacher</h2>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="teacherUsername" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="teacherPassword" placeholder="Enter password">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="teacherEmail" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="teacherFullName" placeholder="Enter full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Employee ID</label>
+                        <input type="text" id="teacherEmployeeId" placeholder="Enter employee ID">
+                    </div>
+                    <div class="form-group">
+                        <label>Designation</label>
+                        <input type="text" id="teacherDesignation" placeholder="e.g., Professor">
+                    </div>
+                    <button class="btn btn-success" onclick="registerTeacher()">Register Teacher</button>
+                </div>
+
+                <div class="card">
+                    <h2>👨‍🎓 Register as Student</h2>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="studentUsername" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="studentPassword" placeholder="Enter password">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="studentEmail" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="studentFullName" placeholder="Enter full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Student ID</label>
+                        <input type="text" id="studentStudentId" placeholder="Enter student ID/roll">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="studentPhone" placeholder="Enter phone number">
+                    </div>
+                    <button class="btn btn-success" onclick="registerStudent()">Register Student</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section">
+            <div class="card">
+                <h2>📊 Dashboard</h2>
+                <div id="userInfo" class="login-info" style="display:none;">
+                    <strong>Logged in as:</strong> <span id="currentUser"></span>
+                    <span id="userRole" class="badge"></span>
+                </div>
+                <div id="notLoggedIn">
+                    <p>Please login first to view the dashboard.</p>
+                </div>
+                <div id="dashboardContent" style="display:none;">
+                    <div class="two-col">
+                        <div class="card" style="box-shadow: none; border: 1px solid #eee;">
+                            <h3>Quick Stats</h3>
+                            <p style="margin-top: 10px;">Total Students: <strong id="totalStudents">0</strong></p>
+                            <p>Total Courses: <strong id="totalCourses">0</strong></p>
+                            <p>Total Departments: <strong id="totalDepartments">0</strong></p>
+                        </div>
+                        <div class="card" style="box-shadow: none; border: 1px solid #eee;">
+                            <h3>Your Permissions</h3>
+                            <div id="teacherPermissions" style="display:none;">
+                                <p style="color: green;">✅ Can create courses</p>
+                                <p style="color: green;">✅ Can delete students</p>
+                                <p style="color: green;">✅ Can manage departments</p>
+                            </div>
+                            <div id="studentPermissions" style="display:none;">
+                                <p style="color: green;">✅ Can view courses</p>
+                                <p style="color: green;">✅ Can enroll in courses</p>
+                                <p style="color: red;">❌ Cannot create courses</p>
+                                <p style="color: red;">❌ Cannot delete account</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Section -->
+        <div id="courses" class="section">
+            <div class="card">
+                <h2>📚 Courses</h2>
+                <div id="createCourseForm" style="display:none; margin-bottom: 20px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px;">Create New Course (Teacher Only)</h3>
+                    <div class="two-col">
+                        <div class="form-group">
+                            <label>Course Code</label>
+                            <input type="text" id="courseCode" placeholder="e.g., CS101">
+                        </div>
+                        <div class="form-group">
+                            <label>Course Name</label>
+                            <input type="text" id="courseName" placeholder="e.g., Introduction to Programming">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="courseDescription" placeholder="Course description">
+                    </div>
+                    <div class="two-col">
+                        <div class="form-group">
+                            <label>Credits</label>
+                            <input type="number" id="courseCredits" placeholder="e.g., 3" min="1" max="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <select id="courseDepartment">
+                                <option value="">Select Department</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-success" onclick="createCourse()">Create Course</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Credits</th>
+                            <th>Department</th>
+                            <th>Teacher</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coursesTable">
+                        <tr><td colspan="7">Please login to view courses</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Departments Section -->
+        <div id="departments" class="section">
+            <div class="card">
+                <h2>🏛️ Departments</h2>
+                <div id="createDeptForm" style="display:none; margin-bottom: 20px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px;">Create New Department (Teacher Only)</h3>
+                    <div class="form-group">
+                        <label>Department Name</label>
+                        <input type="text" id="deptName" placeholder="e.g., Computer Science">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="deptDescription" placeholder="Department description">
+                    </div>
+                    <button class="btn btn-success" onclick="createDepartment()">Create Department</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="departmentsTable">
+                        <tr><td colspan="4">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Students Section -->
+        <div id="students" class="section">
+            <div class="card">
+                <h2>👨‍🎓 Students</h2>
+                <div id="assignDeptModal" style="display:none; margin-bottom: 20px; padding: 20px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffc107;">
+                    <h3 style="margin-bottom: 15px;">Assign Department to Student</h3>
+                    <p><strong>Student:</strong> <span id="assignStudentName"></span></p>
+                    <div class="form-group">
+                        <label>Select Department</label>
+                        <select id="assignDepartmentSelect">
+                            <option value="">Select Department</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" onclick="confirmAssignDepartment()">Assign</button>
+                    <button class="btn btn-danger" onclick="cancelAssignDepartment()">Cancel</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTable">
+                        <tr><td colspan="6">Please login to view students</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:9090';
+        let currentCredentials = null;
+        let currentUserRole = null;
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 5000);
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+
+            if (sectionId === 'courses' && currentCredentials) {
+                loadCourses();
+                loadDepartmentsForDropdown();
+            }
+            if (sectionId === 'departments') loadDepartments();
+            if (sectionId === 'students' && currentCredentials) {
+                loadStudents();
+                loadDepartmentsForDropdown();
+            }
+            if (sectionId === 'dashboard' && currentCredentials) loadDashboard();
+        }
+
+        function getAuthHeader() {
+            if (!currentCredentials) return {};
+            return { 'Authorization': 'Basic ' + btoa(currentCredentials.username + ':' + currentCredentials.password) };
+        }
+
+        async function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                showAlert('Please enter username and password', 'error');
+                return;
+            }
+
+            currentCredentials = { username, password };
+
+            try {
+                // Try to fetch the authenticated user's role by checking endpoints
+                const studentResponse = await fetch(`${API_BASE}/api/students`, {
+                    headers: getAuthHeader()
+                });
+
+                if (studentResponse.ok) {
+                    // Try to access departments endpoint with POST (teacher-only)
+                    const testResponse = await fetch(`${API_BASE}/api/departments/999999`, {
+                        method: 'DELETE',
+                        headers: getAuthHeader()
+                    });
+
+                    // If 403, user is STUDENT. If 404 or other, user is TEACHER
+                    if (testResponse.status === 403) {
+                        currentUserRole = 'STUDENT';
+                    } else {
+                        currentUserRole = 'TEACHER';
+                    }
+
+                    showAlert('Login successful! Welcome ' + username, 'success');
+                    updateUIForRole();
+                    showSection('dashboard');
+                    document.querySelector('[onclick="showSection(\'dashboard\')"]').classList.add('active');
+                } else if (studentResponse.status === 401) {
+                    currentCredentials = null;
+                    showAlert('Invalid username or password', 'error');
+                } else {
+                    showAlert('Login failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Connection error: ' + error.message, 'error');
+            }
+        }
+
+        function updateUIForRole() {
+            document.getElementById('userInfo').style.display = 'block';
+            document.getElementById('notLoggedIn').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+            document.getElementById('currentUser').textContent = currentCredentials.username;
+
+            const roleSpan = document.getElementById('userRole');
+            if (currentUserRole === 'TEACHER') {
+                roleSpan.textContent = 'TEACHER';
+                roleSpan.className = 'badge badge-teacher';
+                document.getElementById('teacherPermissions').style.display = 'block';
+                document.getElementById('studentPermissions').style.display = 'none';
+                document.getElementById('createCourseForm').style.display = 'block';
+                document.getElementById('createDeptForm').style.display = 'block';
+            } else {
+                roleSpan.textContent = 'STUDENT';
+                roleSpan.className = 'badge badge-student';
+                document.getElementById('teacherPermissions').style.display = 'none';
+                document.getElementById('studentPermissions').style.display = 'block';
+                document.getElementById('createCourseForm').style.display = 'none';
+                document.getElementById('createDeptForm').style.display = 'none';
+            }
+        }
+
+        async function loadDashboard() {
+            try {
+                const [studentsRes, coursesRes, deptsRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/students`, { headers: getAuthHeader() }),
+                    fetch(`${API_BASE}/api/courses`, { headers: getAuthHeader() }),
+                    fetch(`${API_BASE}/api/departments`)
+                ]);
+
+                const students = await studentsRes.json();
+                const courses = await coursesRes.json();
+                const depts = await deptsRes.json();
+
+                document.getElementById('totalStudents').textContent = students.data?.length || 0;
+                document.getElementById('totalCourses').textContent = courses.data?.length || 0;
+                document.getElementById('totalDepartments').textContent = depts.data?.length || 0;
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        async function registerTeacher() {
+            const data = {
+                username: document.getElementById('teacherUsername').value,
+                password: document.getElementById('teacherPassword').value,
+                email: document.getElementById('teacherEmail').value,
+                fullName: document.getElementById('teacherFullName').value,
+                employeeId: document.getElementById('teacherEmployeeId').value,
+                designation: document.getElementById('teacherDesignation').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/register/teacher`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Teacher registered successfully! You can now login.', 'success');
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function registerStudent() {
+            const data = {
+                username: document.getElementById('studentUsername').value,
+                password: document.getElementById('studentPassword').value,
+                email: document.getElementById('studentEmail').value,
+                fullName: document.getElementById('studentFullName').value,
+                studentId: document.getElementById('studentStudentId').value,
+                phoneNumber: document.getElementById('studentPhone').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/register/student`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Student registered successfully! You can now login.', 'success');
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function loadCourses() {
+            try {
+                const response = await fetch(`${API_BASE}/api/courses`, { headers: getAuthHeader() });
+                const result = await response.json();
+                const tbody = document.getElementById('coursesTable');
+
+                if (result.data && result.data.length > 0) {
+                    tbody.innerHTML = result.data.map(course => `
+                        <tr>
+                            <td>${course.id}</td>
+                            <td><strong>${course.courseCode}</strong></td>
+                            <td>${course.courseName}</td>
+                            <td>${course.credits}</td>
+                            <td>${course.department?.name || 'Not Assigned'}</td>
+                            <td>${course.teacher?.fullName || 'N/A'}</td>
+                            <td>
+                                ${currentUserRole === 'TEACHER' ?
+                                    `<button class="btn btn-danger action-btn" onclick="deleteCourse(${course.id})">Delete</button>` :
+                                    `<button class="btn btn-primary action-btn" onclick="enrollCourse(${course.id})">Enroll</button>`
+                                }
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7">No courses found</td></tr>';
+                }
+            } catch (error) {
+                showAlert('Error loading courses: ' + error.message, 'error');
+            }
+        }
+
+        async function loadDepartments() {
+            try {
+                const response = await fetch(`${API_BASE}/api/departments`);
+                const result = await response.json();
+                const tbody = document.getElementById('departmentsTable');
+
+                if (result.data && result.data.length > 0) {
+                    tbody.innerHTML = result.data.map(dept => `
+                        <tr>
+                            <td>${dept.id}</td>
+                            <td><strong>${dept.name}</strong></td>
+                            <td>${dept.description || 'N/A'}</td>
+                            <td>
+                                ${currentUserRole === 'TEACHER' ?
+                                    `<button class="btn btn-danger action-btn" onclick="deleteDepartment(${dept.id})">Delete</button>` :
+                                    '-'
+                                }
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4">No departments found</td></tr>';
+                }
+            } catch (error) {
+                showAlert('Error loading departments: ' + error.message, 'error');
+            }
+        }
+
+        async function loadStudents() {
+            try {
+                const response = await fetch(`${API_BASE}/api/students`, { headers: getAuthHeader() });
+                const result = await response.json();
+                const tbody = document.getElementById('studentsTable');
+
+                if (result.data && result.data.length > 0) {
+                    tbody.innerHTML = result.data.map(student => `
+                        <tr>
+                            <td>${student.id}</td>
+                            <td><strong>${student.studentId}</strong></td>
+                            <td>${student.fullName}</td>
+                            <td>${student.email}</td>
+                            <td>${student.department?.name || 'Not Assigned'}</td>
+                            <td>
+                                ${currentUserRole === 'TEACHER' ?
+                                    `<button class="btn btn-warning action-btn" onclick="showAssignDept(${student.id}, '${student.fullName}', ${student.department?.id || 'null'})">Assign Dept</button>
+                                     <button class="btn btn-danger action-btn" onclick="deleteStudent(${student.id})">Delete</button>` :
+                                    '<span style="color: #999;">No actions</span>'
+                                }
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6">No students found</td></tr>';
+                }
+            } catch (error) {
+                showAlert('Error loading students: ' + error.message, 'error');
+            }
+        }
+
+        async function createCourse() {
+            const deptId = document.getElementById('courseDepartment').value;
+            const data = {
+                courseCode: document.getElementById('courseCode').value,
+                courseName: document.getElementById('courseName').value,
+                description: document.getElementById('courseDescription').value,
+                credits: parseInt(document.getElementById('courseCredits').value),
+                departmentId: deptId ? parseInt(deptId) : null
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/courses`, {
+                    method: 'POST',
+                    headers: { ...getAuthHeader(), 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Course created successfully!', 'success');
+                    loadCourses();
+                    // Clear form
+                    document.getElementById('courseCode').value = '';
+                    document.getElementById('courseName').value = '';
+                    document.getElementById('courseDescription').value = '';
+                    document.getElementById('courseCredits').value = '';
+                    document.getElementById('courseDepartment').value = '';
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function createDepartment() {
+            const data = {
+                name: document.getElementById('deptName').value,
+                description: document.getElementById('deptDescription').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/departments`, {
+                    method: 'POST',
+                    headers: { ...getAuthHeader(), 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Department created successfully!', 'success');
+                    loadDepartments();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteStudent(id) {
+            if (!confirm('Are you sure you want to delete this student?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/students/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeader()
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Student deleted successfully!', 'success');
+                    loadStudents();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteCourse(id) {
+            if (!confirm('Are you sure you want to delete this course?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/courses/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeader()
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Course deleted successfully!', 'success');
+                    loadCourses();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteDepartment(id) {
+            if (!confirm('Are you sure you want to delete this department?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/departments/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeader()
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Department deleted successfully!', 'success');
+                    loadDepartments();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Load departments into dropdown
+        async function loadDepartmentsForDropdown() {
+            try {
+                const response = await fetch(`${API_BASE}/api/departments`);
+                const result = await response.json();
+
+                if (result.data && result.data.length > 0) {
+                    // Update course department dropdown
+                    const courseDeptSelect = document.getElementById('courseDepartment');
+                    if (courseDeptSelect) {
+                        courseDeptSelect.innerHTML = '<option value="">Select Department</option>' +
+                            result.data.map(dept => `<option value="${dept.id}">${dept.name}</option>`).join('');
+                    }
+
+                    // Update student department assign dropdown
+                    const assignDeptSelect = document.getElementById('assignDepartmentSelect');
+                    if (assignDeptSelect) {
+                        assignDeptSelect.innerHTML = '<option value="">Select Department</option>' +
+                            result.data.map(dept => `<option value="${dept.id}">${dept.name}</option>`).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading departments for dropdown:', error);
+            }
+        }
+
+        // Variables for department assignment
+        let assigningStudentId = null;
+
+        function showAssignDept(studentId, studentName, currentDeptId) {
+            assigningStudentId = studentId;
+            document.getElementById('assignStudentName').textContent = studentName;
+            document.getElementById('assignDeptModal').style.display = 'block';
+
+            // Pre-select current department if exists
+            if (currentDeptId) {
+                document.getElementById('assignDepartmentSelect').value = currentDeptId;
+            }
+        }
+
+        function cancelAssignDepartment() {
+            assigningStudentId = null;
+            document.getElementById('assignDeptModal').style.display = 'none';
+            document.getElementById('assignDepartmentSelect').value = '';
+        }
+
+        async function confirmAssignDepartment() {
+            const deptId = document.getElementById('assignDepartmentSelect').value;
+
+            if (!deptId) {
+                showAlert('Please select a department', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/students/${assigningStudentId}/department/${deptId}`, {
+                    method: 'PUT',
+                    headers: getAuthHeader()
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('Department assigned successfully!', 'success');
+                    cancelAssignDepartment();
+                    loadStudents();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function enrollCourse(courseId) {
+            try {
+                // Get current logged-in student's ID - we need to fetch this
+                const studentsResponse = await fetch(`${API_BASE}/api/students`, { headers: getAuthHeader() });
+                const studentsResult = await studentsResponse.json();
+
+                // Find current user's student record
+                const currentStudent = studentsResult.data.find(s => s.username === currentCredentials.username);
+
+                if (!currentStudent) {
+                    showAlert('Could not find your student record', 'error');
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE}/api/students/${currentStudent.id}/courses/${courseId}`, {
+                    method: 'POST',
+                    headers: getAuthHeader()
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('Successfully enrolled in course!', 'success');
+                    loadCourses();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        // Load departments on page load (public endpoint)
+        loadDepartments();
+    </script>
+</body>
+</html>
