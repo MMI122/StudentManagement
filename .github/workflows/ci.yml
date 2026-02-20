@@ -28,13 +28,7 @@ jobs:
       - name: Build with Maven (skip tests)
         run: ./mvnw compile -B -q
 
-      - name: Run Unit Tests
-        run: ./mvnw test -Dtest="com.example.studentmanagement.controller.**,com.example.studentmanagement.service.**" -B
-
-      - name: Run Integration Tests
-        run: ./mvnw test -Dtest="com.example.studentmanagement.integration.**" -B
-
-      - name: Run All Tests (full suite)
+      - name: Run All Tests
         run: ./mvnw test -B
 
       - name: Upload Test Reports
